@@ -112,3 +112,54 @@ fn main() {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_create_player() {
+        let player = create_player("Alice");
+        assert_eq!(player.name, "Alice");
+        assert_eq!(player.health, 100);
+        assert_eq!(player.inventory.len(), 0);
+    }
+
+    #[test]
+    fn test_room_transitions() {
+        let mut current_room = Room::Entrance;
+
+        current_room = Room::Hallway;
+        assert_eq!(current_room, Room::Hallway);
+
+        current_room = Room::TreasureRoom;
+        assert_eq!(current_room, Room::TreasureRoom);
+    }
+
+    #[test]
+    fn test_monster_battle() {
+        let mut player = create_player("Bob");
+
+        assert_eq!(player.health, 100);
+        assert_eq!(player.inventory.len(), 0);
+
+        monster_room(&mut player);
+
+        assert_eq!(player.health, 80);
+        assert_eq!(player.inventory, vec![Item::Sword]);
+    }
+
+    #[test]
+    fn test_player_defeat() {
+        let mut player = Player {
+            name: String::from("Charlie"),
+            health: 10,
+            inventory: Vec::new(),
+        };
+
+        monster_room(&mut player);
+
+        assert!(player.health <= 0);
+        assert!(player.inventory.is_empty());
+    }
+}
